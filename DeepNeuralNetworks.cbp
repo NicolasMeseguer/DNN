@@ -31,9 +31,22 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="header.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="mathlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="mathlib.h" />
+		<Unit filename="struct.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="struct.h" />
+		<Unit filename="visual.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="visual.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

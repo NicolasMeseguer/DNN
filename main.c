@@ -17,7 +17,7 @@
 */
 int main()
 {
-    int w1count,wchoice, MATTAM, layercount;
+    int w1count,wchoice, MATTAM, layercount, *neuronsLayer;
     /*
     *   w1count     - number of input weights
     *   wchoice     - type of the input weights, choice decided by the user, matrices or doubles
@@ -42,10 +42,20 @@ int main()
     menu(2);
     switch(printmodelopt()){
         case 1:
-            layercount = 3; //3 layers & 3 neurons each layer .3*3
+            layercount = 3; //3 layers
+            neuronsLayer = (int *)malloc(sizeof(int)*layercount);
+
+            //Custom Neurons per Layer
+            /*neuronsLayer [0] = 3;
+            neuronsLayer [1] = 5;
+            neuronsLayer [2] = 3;*/
+
+            for(int i=0;i<layercount;++i)
+                *(neuronsLayer+i) = 5;
+
             layers = (layer*)malloc(sizeof(layer)*layercount);
             for(int i=0;i<layercount;++i){
-                (layers+i)->tamneurons = layercount; //Assuming we have 3 neurons in each layer
+                (layers+i)->tamneurons = *(neuronsLayer+i); //Assuming we have 3 neurons in each layer
                 (layers+i)->neurons = (neuron *)malloc(sizeof(neuron)*((layers+i)->tamneurons));  //In each layer we have neurons[tamneurons]
                 for(int j=0;j<(layers+i)->tamneurons;++j){
                     if(i==0){
@@ -55,15 +65,15 @@ int main()
                         }
                     }
                     else{
-                        (layers+i)->neurons[j].weight = (double *)malloc(sizeof(double)*layercount);
-                        for(int k=0;k<layercount;++k){
+                        (layers+i)->neurons[j].weight = (double *)malloc(sizeof(double)*(layers[i-1].tamneurons));
+                        for(int k=0;k<layers[i-1].tamneurons;++k){
                             (layers+i)->neurons[j].weight[k] = (double)(rand()%2);
                         }
                     }
                 }
                 (layers+i)->layertype = 1;
             }
-            output = assignOutputWeights(output, layercount);
+            output = assignOutputWeights(output, layers[layercount-1].tamneurons);
             break;
         default:
             printf("\nTemplate not defined yet...\n\n\n");
@@ -84,7 +94,7 @@ int main()
                 else
                     for(int k=0;k<(layers+i-1)->tamneurons;++k)
                         buffer+=(layers[i-1].neurons[k].value)*(layers[i].neurons[j].weight[k]);
-                layers[i].neurons[j].value = ReLU(buffer);
+                layers[i].neurons[j].value = sigmoid(buffer);
             }
         }
     }

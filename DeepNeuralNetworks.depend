@@ -5,34 +5,34 @@
 	<stdlib.h>
 	<time.h>
 
-1583162898 source:c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\mathlib.c
+1583163737 source:c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\mathlib.c
 	"mathlib.h"
 
-1583163606 c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\mathlib.h
+1583163737 c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\mathlib.h
 	"header.h"
 
-1583163579 source:c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\main.c
+1583167751 source:c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\main.c
 	"header.h"
 	"struct.h"
 	"visual.h"
 	"mathlib.h"
 
-1583163597 c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\struct.h
+1583163737 c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\struct.h
 	"header.h"
 
-1583163586 c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\visual.h
+1583163737 c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\visual.h
 	"struct.h"
 	"header.h"
 
-1583163572 c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\header.h
+1583163737 c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\header.h
 	<stdio.h>
 	<math.h>
 	<stdlib.h>
 	<time.h>
 
-1583163470 source:c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\struct.c
+1583167938 source:c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\struct.c
 	"struct.h"
 
-1583163225 source:c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\visual.c
+1583163737 source:c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\visual.c
 	"visual.h"
 

@@ -171,7 +171,7 @@ int main()
                             int iterations = (MATTAM*MATTAM) / (wsize*wsize);
                             int counter=0;
                             int posx=0,posy=0;
-                            for(int l=0;l<iterations;++l){ //4 hilos
+                            for(int l=0;l<iterations;++l){ //4 threads
 
                                 for(int n=0;n<wsize;++n){
                                     for(int o=0;o<wsize;++o){
@@ -183,13 +183,13 @@ int main()
                                 posx+=wsize;
                                 if(counter%wsize==0) {posy+=wsize;posx=0;counter=0;}
 
-                                //Operaciones de multiplicacion
-                                printf("\nDentro del peso %i, en la submatriz %i la multiplico por el filtro de la neurona %i", k, l, j);
+                                //Multiply operations.
+                                printf("\nWeight number: %i, in the submatrix %i multiplied by the neuron filter %i", k, l, j);
                             }
                         }
                     }
                     else{
-                        //Resto de neuronas...
+                        //Rest of neurons...
                     }
                 }
             }

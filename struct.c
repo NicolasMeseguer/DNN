@@ -29,11 +29,20 @@ layer createOutputLayer(int neurons){
     return output;
 }
 
-layer assignOutputWeights(layer output, int previousLayerNeurons){
+layer assignOutputWeights(layer output, int previousLayerNeurons, int choice, int filtersize){
     for(int i=0;i<output.tamneurons;++i){
-        output.neurons[i].weight = (double *)malloc(sizeof(double)*previousLayerNeurons);
-        for(int j=0;j<previousLayerNeurons;++j){
-            output.neurons[i].weight[j] = (double)(rand()%2);
+        if(choice==1){
+            output.neurons[i].weight = (double *)malloc(sizeof(double)*previousLayerNeurons);
+            for(int j=0;j<previousLayerNeurons;++j){
+                output.neurons[i].weight[j] = (double)(rand()%2);
+            }
+        }
+        else{
+            int memsize = filtersize*filtersize;
+            output.neurons[i].filter = (double*)malloc(sizeof(double)*memsize);
+            for(int j=0;j<memsize;++j){
+                output.neurons[i].filter[j] = (double)((rand()%4)-1);
+            }
         }
     }
     return output;

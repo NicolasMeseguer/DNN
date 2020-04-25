@@ -20,8 +20,8 @@ void menu(int opt){
 
 int printmodelopt(){
     int choice;
-    printf("1 - FC, 3 layers, 3 neuron each.");
-    printf("\n2 - TBD.");
+    printf("1 - Fully Connected Model.");
+    printf("\n2 - Convolutional Network.");
     printf("\n3 - TBD.");
     printf("\n4 - TBD.");
     printf("\n5 - TBD.");

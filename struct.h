@@ -6,6 +6,7 @@
 typedef struct neuron{
     double value;
     double *weight;
+    double *filter;
     double bias;
 }neuron;
 
@@ -22,6 +23,6 @@ typedef struct layer{
 
 void fillWeights(double **w1, double ***w2, int numbweights, int wchoice, char **str, int *MTAM);
 layer createOutputLayer(int neurons);
-layer assignOutputWeights(layer output, int previousLayerNeurons);
+layer assignOutputWeights(layer output, int previousLayerNeurons, int choice, int filtersize);
 
 #endif // _STRUCT_H_

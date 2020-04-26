@@ -43,3 +43,13 @@ double getMajor(double *a, int MSize){
     }
     return tempvalue;
 }
+
+//Return the average sum of all the items in the matrix
+double getAverage(double *a, int MSize){
+    int memsize = MSize*MSize;
+    double tempvalue = 0;
+    for(int i=0;i<memsize;++i){
+        tempvalue += *(a+i);
+    }
+    return (double)tempvalue/memsize;
+}

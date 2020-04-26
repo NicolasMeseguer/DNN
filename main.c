@@ -17,7 +17,7 @@
 */
 int main()
 {
-    int w1count,wchoice, wsize, MATTAM, layercount, *neuronsLayer, decisionchoice;
+    int w1count,wchoice, wsize, MATTAM, layercount, *neuronsLayer, decisionchoice, poolchoice;
     /*
     *   w1count     - number of input weights
     *   wchoice     - type of the input weights, choice decided by the user, matrices or doubles
@@ -25,6 +25,7 @@ int main()
     *   MATTAM      - controls the TAM of the matrices
     *   layercount  - number of layers
     *   decisionchoice - controls the answer of the  user for if-statements
+    *   poolchoice  - determines the pooling method
     */
     char *str = (char*)malloc(sizeof(char)*strTAM);         //String to control the messages
     double *w1;                                             //Doubles Array
@@ -37,7 +38,7 @@ int main()
     menu(1);
     printf("Number of input weights(w1count): ");fflush(stdin);scanf("%i", &w1count);
     printf("\n%i input weights, select its type:\n1 - Doubles(w1).\n2 - Matrices(w2).\nType: ", w1count);fflush(stdin);scanf("%i", &wchoice);
-    if(wchoice==2) {printf("\nEnter the size of the filter matrix, assuming square matrices(e.g. 2 = 2x2; 3 = 3x3)\nSize: "); scanf("%i", &wsize);}
+    if(wchoice==2) {printf("\nEnter the size of the filter matrix, assuming square matrices(e.g. 2 = 2x2; 3 = 3x3)\nSize: "); scanf("%i", &wsize);printf("\nSelect the pooling method:\n1 - Max Pooling.\n2 - Average Pooling.\nChoice: "); scanf("%i", &poolchoice);}
     if(wchoice!=1&&wchoice!=2){ return 0; } fillWeights(&w1, &w2, w1count, wchoice, &str, &MATTAM); showWeights(str, wchoice, w1count, MATTAM, w1, w2);
 
     /**/
@@ -160,9 +161,11 @@ int main()
         }
     }
     else if(wchoice==2){
+        int memsize = wsize*wsize;
         int cvsize = convolvSize(MATTAM,wsize);
         int cvmemsize = cvsize*cvsize;
-        int memsize = wsize*wsize;
+        int poolsize = convolvSize(cvsize, wsize);
+        int poolmemsize = poolsize*poolsize;
         for(int i=0;i<layercount;++i){
             if((layers+i)->layertype == 1){
                 for(int j=0;j<(layers+i)->tamneurons;++j){
@@ -186,8 +189,6 @@ int main()
                             }
                             //Pooling Layer -> pooling filter size = Window size
                             counter=posx=posy=0;
-                            int poolsize = convolvSize(cvsize, wsize);
-                            int poolmemsize = poolsize*poolsize;
                             double *poolmatrix = (double*)malloc(sizeof(double)*poolmemsize);
                             for(int l=0;l<poolmemsize;++l){
                                 for(int n=0;n<wsize;++n){
@@ -199,8 +200,14 @@ int main()
                                 posx++;
                                 if(counter+wsize>cvsize) {posy++;posx=0;counter=0;}
 
-                                *(poolmatrix+l) = getMajor(tempmatrix, wsize);
+                                if(poolchoice==1){
+                                    *(poolmatrix+l) = getAverage(tempmatrix, wsize);
+                                }
+                                else if(poolchoice==2){
+                                    *(poolmatrix+l) = getMajor(tempmatrix, wsize);
+                                }
                             }
+                            //Store the pooling matrix somewhere and calculate with the rest of the weights...
                         }
                         free(tempmatrix);
                     }

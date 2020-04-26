@@ -41,9 +41,17 @@ layer assignOutputWeights(layer output, int previousLayerNeurons, int choice, in
             int memsize = filtersize*filtersize;
             output.neurons[i].filter = (double*)malloc(sizeof(double)*memsize);
             for(int j=0;j<memsize;++j){
-                output.neurons[i].filter[j] = (double)((rand()%4)-1);
+                output.neurons[i].filter[j] = (double)((rand()%3)-2);
             }
         }
     }
     return output;
+}
+
+int convolvSize(int MSize, int WSize){
+    int tempmatrixsize=0;
+    for(int i=0;i<MSize;++i){
+        if(i+WSize<=MSize) tempmatrixsize++;
+    }
+    return tempmatrixsize;
 }

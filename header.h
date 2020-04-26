@@ -5,5 +5,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
+#include <float.h>
 
 #endif // _HEADER_H_

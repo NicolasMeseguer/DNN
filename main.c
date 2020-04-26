@@ -12,8 +12,7 @@
 *
 *   Objectives:
 *       Random weights
-*       wsize > MATTAM ? error:success;
-*       MATTAM%wsize == 0
+*       Checks if conv layer & pooling works as it should
 *
 */
 int main()
@@ -114,12 +113,12 @@ int main()
             layers = (layer*)malloc(sizeof(layer)*layercount);
             for(int i=0;i<layercount;++i){
                 (layers+i)->tamneurons = *(neuronsLayer+i);
-                (layers+i)->neurons = (neuron *)malloc(sizeof(neuron)*((layers+i)->tamneurons));  //In each layer we have neurons[tamneurons]
+                (layers+i)->neurons = (neuron *)malloc(sizeof(neuron)*((layers+i)->tamneurons));
                 for(int j=0;j<(layers+i)->tamneurons;++j){
                     int memsize = wsize*wsize;
                     (layers+i)->neurons[j].filter = (double *)malloc(sizeof(double)*memsize);
                     for(int k=0;k<memsize;++k){
-                        (layers+i)->neurons[j].filter[k] = (double)((rand()%4)-1);
+                        (layers+i)->neurons[j].filter[k] = (double)((rand()%3)-2); //Values between -1 & 1
                     }
                 }
                 (layers+i)->layertype = 1;
@@ -161,35 +160,52 @@ int main()
         }
     }
     else if(wchoice==2){
+        int cvsize = convolvSize(MATTAM,wsize);
+        int cvmemsize = cvsize*cvsize;
         int memsize = wsize*wsize;
         for(int i=0;i<layercount;++i){
             if((layers+i)->layertype == 1){
                 for(int j=0;j<(layers+i)->tamneurons;++j){
                     if(i==0){
+                        double *tempmatrix = (double*)malloc(sizeof(double)*memsize);
+                        double *convmatrix = (double*)malloc(sizeof(double)*cvmemsize);
+                        int posx=0,posy=0,counter=0;
                         for(int k=0;k<w1count;++k){
-                            double *tempmatrix = (double*)malloc(sizeof(double)*memsize);
-                            int iterations = (MATTAM*MATTAM) / (wsize*wsize);
-                            int counter=0;
-                            int posx=0,posy=0;
-                            for(int l=0;l<iterations;++l){ //4 threads
-
+                            //Convolution Layer
+                            for(int l=0;l<cvmemsize;++l){
                                 for(int n=0;n<wsize;++n){
                                     for(int o=0;o<wsize;++o){
                                         tempmatrix[(wsize*n)+o] = w2[k][((posy + n) * MATTAM) + posx + o];
                                     }
                                 }
-
                                 counter++;
-                                posx+=wsize;
-                                if(counter%wsize==0) {posy+=wsize;posx=0;counter=0;}
+                                posx++;
+                                if(counter+wsize>MATTAM) {posy++;posx=0;counter=0;}
 
-                                //Multiply operations.
-                                printf("\nWeight number: %i, in the submatrix %i multiplied by the neuron filter %i", k, l, j);
+                                *(convmatrix+l) = addMatrices(tempmatrix, layers[i].neurons[j].filter, wsize);
+                            }
+                            //Pooling Layer -> pooling filter size = Window size
+                            counter=posx=posy=0;
+                            int poolsize = convolvSize(cvsize, wsize);
+                            int poolmemsize = poolsize*poolsize;
+                            double *poolmatrix = (double*)malloc(sizeof(double)*poolmemsize);
+                            for(int l=0;l<poolmemsize;++l){
+                                for(int n=0;n<wsize;++n){
+                                    for(int o=0;o<wsize;++o){
+                                        tempmatrix[(wsize*n)+o] = convmatrix[((posy + n) * cvsize) + posx + o];
+                                    }
+                                }
+                                counter++;
+                                posx++;
+                                if(counter+wsize>cvsize) {posy++;posx=0;counter=0;}
+
+                                *(poolmatrix+l) = getMajor(tempmatrix, wsize);
                             }
                         }
+                        free(tempmatrix);
                     }
                     else{
-                        //Rest of neurons...
+                        printf("\nLayer %i, neuron %i.", i, j);
                     }
                 }
             }

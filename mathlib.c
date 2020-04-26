@@ -23,3 +23,23 @@ double dSigmoid(double x){
     double r = 1-x;
     return (x * r);
 }
+
+//Given two contiguous matrices, multiply them and return the value
+double addMatrices(double *a, double *b, int MSize){
+    double tempvalue = 0.0f;
+    int memsize = MSize*MSize;
+    for(int i=0;i<memsize;++i){
+        tempvalue += (*(a+i))*(*(b+i));
+    }
+    return tempvalue;
+}
+
+//Return the highest value given an array of size: MSize*MSize
+double getMajor(double *a, int MSize){
+    int memsize = MSize*MSize;
+    double tempvalue = -DBL_MAX;
+    for(int i=0;i<memsize;++i){
+        if(*(a+i)>tempvalue) tempvalue = *(a+i);
+    }
+    return tempvalue;
+}

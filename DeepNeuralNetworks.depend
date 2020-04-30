@@ -36,7 +36,7 @@
 1583163737 source:c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\visual.c
 	"visual.h"
 
-1587902819 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\main.c
+1588244757 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\main.c
 	"header.h"
 	"struct.h"
 	"visual.h"
@@ -49,7 +49,7 @@
 	<time.h>
 	<float.h>
 
-1587898012 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\struct.h
+1588243600 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\struct.h
 	"header.h"
 
 1587724234 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\visual.h
@@ -65,6 +65,6 @@
 1587901364 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\struct.c
 	"struct.h"
 
-1587753534 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\visual.c
+1588242052 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\visual.c
 	"visual.h"
 

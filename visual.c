@@ -3,10 +3,10 @@
 void menu(int opt){
     switch(opt){
         case 1:
-            printf("--------------------\nSTEP 1 - Input Weights\n--------------------\n");
+            printf("--------------------\nSTEP 1 - Design Model\n--------------------\n");
             break;
         case 2:
-            printf("\n--------------------\nSTEP 2 - Design Model\n--------------------\n");
+            printf("\n--------------------\nSTEP 2 - Input Weights\n--------------------\n");
             break;
         case 3:
             printf("\n--------------------\nSTEP 3 - Operations Weights\n--------------------\n");

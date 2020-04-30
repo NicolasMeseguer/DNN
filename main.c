@@ -17,7 +17,7 @@
 */
 int main()
 {
-    int w1count,wchoice, wsize, MATTAM, layercount, *neuronsLayer, decisionchoice, poolchoice;
+    int w1count,wchoice, wsize=0, MATTAM=0, layercount, *neuronsLayer, decisionchoice, poolchoice, modelchoice;
     /*
     *   w1count     - number of input weights
     *   wchoice     - type of the input weights, choice decided by the user, matrices or doubles
@@ -26,6 +26,7 @@ int main()
     *   layercount  - number of layers
     *   decisionchoice - controls the answer of the  user for if-statements
     *   poolchoice  - determines the pooling method
+    *   modelchoice - selects the model
     */
     char *str = (char*)malloc(sizeof(char)*strTAM);         //String to control the messages
     double *w1;                                             //Doubles Array
@@ -36,15 +37,23 @@ int main()
     /**/
     //Select input weights, its type & fill them.
     menu(1);
+    modelchoice = printmodelopt();
+
+    menu(2);
     printf("Number of input weights(w1count): ");fflush(stdin);scanf("%i", &w1count);
     printf("\n%i input weights, select its type:\n1 - Doubles(w1).\n2 - Matrices(w2).\nType: ", w1count);fflush(stdin);scanf("%i", &wchoice);
     if(wchoice==2) {printf("\nEnter the size of the filter matrix, assuming square matrices(e.g. 2 = 2x2; 3 = 3x3)\nSize: "); scanf("%i", &wsize);printf("\nSelect the pooling method:\n1 - Max Pooling.\n2 - Average Pooling.\nChoice: "); scanf("%i", &poolchoice);}
     if(wchoice!=1&&wchoice!=2){ return 0; } fillWeights(&w1, &w2, w1count, wchoice, &str, &MATTAM); showWeights(str, wchoice, w1count, MATTAM, w1, w2);
 
+    int memsize = wsize*wsize;
+    int cvsize = convolvSize(MATTAM,wsize);
+    int cvmemsize = cvsize*cvsize;
+    int poolsize = convolvSize(cvsize, wsize);
+    int poolmemsize = poolsize*poolsize;
+
     /**/
     //Design the Network(Model)(Layers, Type(FC,Conv,...)
-    menu(2);
-    switch(printmodelopt()){
+    switch(modelchoice){
         case 1:
             if(wchoice!=1) {printf("\nThis design needs doubles as input weights.\n"); return 0;}
 
@@ -116,10 +125,10 @@ int main()
                 (layers+i)->tamneurons = *(neuronsLayer+i);
                 (layers+i)->neurons = (neuron *)malloc(sizeof(neuron)*((layers+i)->tamneurons));
                 for(int j=0;j<(layers+i)->tamneurons;++j){
-                    int memsize = wsize*wsize;
                     (layers+i)->neurons[j].filter = (double *)malloc(sizeof(double)*memsize);
                     for(int k=0;k<memsize;++k){
                         (layers+i)->neurons[j].filter[k] = (double)((rand()%3)-2); //Values between -1 & 1
+                        (layers+i)->neurons[j].mvalue = (double*)malloc(sizeof(double)*poolmemsize);
                     }
                 }
                 (layers+i)->layertype = 1;
@@ -136,7 +145,7 @@ int main()
     /**/
     //Compute the operations between different layers...
     menu(3);
-    if(wchoice==1){
+    if(modelchoice==1){
         for(int i=0;i<layercount;++i){
             if((layers+i)->layertype == 1){
                 for(int j=0;j<(layers+i)->tamneurons;++j){
@@ -160,12 +169,7 @@ int main()
             output.neurons[i].value=sigmoid(sum);
         }
     }
-    else if(wchoice==2){
-        int memsize = wsize*wsize;
-        int cvsize = convolvSize(MATTAM,wsize);
-        int cvmemsize = cvsize*cvsize;
-        int poolsize = convolvSize(cvsize, wsize);
-        int poolmemsize = poolsize*poolsize;
+    else if(modelchoice==2){
         for(int i=0;i<layercount;++i){
             if((layers+i)->layertype == 1){
                 for(int j=0;j<(layers+i)->tamneurons;++j){
@@ -173,9 +177,10 @@ int main()
                         double *tempmatrix = (double*)malloc(sizeof(double)*memsize);
                         double *convmatrix = (double*)malloc(sizeof(double)*cvmemsize);
                         int posx=0,posy=0,counter=0;
-                        for(int k=0;k<w1count;++k){
-                            //Convolution Layer
-                            for(int l=0;l<cvmemsize;++l){
+                        double buffer = 0.0f;
+                        for(int l=0;l<cvmemsize;++l){
+
+                            for(int k=0;k<w1count;++k){
                                 for(int n=0;n<wsize;++n){
                                     for(int o=0;o<wsize;++o){
                                         tempmatrix[(wsize*n)+o] = w2[k][((posy + n) * MATTAM) + posx + o];
@@ -184,30 +189,29 @@ int main()
                                 counter++;
                                 posx++;
                                 if(counter+wsize>MATTAM) {posy++;posx=0;counter=0;}
-
-                                *(convmatrix+l) = addMatrices(tempmatrix, layers[i].neurons[j].filter, wsize);
+                                buffer += addMatrices(tempmatrix, layers[i].neurons[j].filter, wsize);
                             }
-                            //Pooling Layer -> pooling filter size = Window size
-                            counter=posx=posy=0;
-                            double *poolmatrix = (double*)malloc(sizeof(double)*poolmemsize);
-                            for(int l=0;l<poolmemsize;++l){
-                                for(int n=0;n<wsize;++n){
-                                    for(int o=0;o<wsize;++o){
-                                        tempmatrix[(wsize*n)+o] = convmatrix[((posy + n) * cvsize) + posx + o];
-                                    }
-                                }
-                                counter++;
-                                posx++;
-                                if(counter+wsize>cvsize) {posy++;posx=0;counter=0;}
 
-                                if(poolchoice==1){
-                                    *(poolmatrix+l) = getAverage(tempmatrix, wsize);
-                                }
-                                else if(poolchoice==2){
-                                    *(poolmatrix+l) = getMajor(tempmatrix, wsize);
+                            *(convmatrix+l) = buffer;
+                        }
+                        //Pooling Layer -> pooling filter size = Window size
+                        counter=posx=posy=0;
+                        double tempv;
+                        for(int l=0;l<poolmemsize;++l){
+                            tempv = 0.0f;
+                            for(int n=0;n<wsize;++n){
+                                for(int o=0;o<wsize;++o){
+                                    tempmatrix[(wsize*n)+o] = convmatrix[((posy + n) * cvsize) + posx + o];
                                 }
                             }
-                            //Store the pooling matrix somewhere and calculate with the rest of the weights...
+                            counter++;
+                            posx++;
+                            if(counter+wsize>cvsize) {posy++;posx=0;counter=0;}
+
+                            if(poolchoice==1) tempv = getAverage(tempmatrix, wsize);
+                            else if(poolchoice==2) tempv = getMajor(tempmatrix, wsize);
+                            layers[i].neurons[j].mvalue[l] = tempv;
+
                         }
                         free(tempmatrix);
                     }

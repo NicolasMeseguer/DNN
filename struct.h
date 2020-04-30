@@ -7,6 +7,7 @@ typedef struct neuron{
     double value;
     double *weight;
     double *filter;
+    double *mvalue;
     double bias;
 }neuron;
 

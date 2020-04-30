@@ -8,6 +8,7 @@ void fillWeights(double **w1, double ***w2, int numbweights, int wchoice, char *
         memsize = (*MTAM)*(*MTAM);
         *w2 = (double**) malloc(sizeof(double*)*numbweights);
         for(int i=0; i<numbweights; ++i){
+            srand(time(NULL));
             *(*(w2)+i) = (double*)malloc(sizeof(double)*memsize);
             for(int j=0; j<memsize; ++j)
                 *(*(*(w2)+i)+j) = (double)((rand()%30)-10);

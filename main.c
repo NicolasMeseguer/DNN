@@ -211,13 +211,25 @@ int main()
                             if(poolchoice==1) tempv = getAverage(tempmatrix, wsize);
                             else if(poolchoice==2) tempv = getMajor(tempmatrix, wsize);
                             layers[i].neurons[j].mvalue[l] = tempv;
-
                         }
                         free(tempmatrix);
                     }
                     else{
                         printf("\nLayer %i, neuron %i.", i, j);
                     }
+
+                    for(int k=0;k<memsize;++k){
+                        printf("%f ", layers[i].neurons[j].filter[k]);
+                        if(k!=0 && (k+1)%wsize==0)
+                        printf("\n");
+                    }
+
+                    for(int k=0;k<poolmemsize;++k){
+                        printf("%f ", layers[i].neurons[j].mvalue[k]);
+                        if(k!=0 && (k+1)%poolsize==0)
+                        printf("\n");
+                    }
+                    system("pause");
                 }
             }
         }

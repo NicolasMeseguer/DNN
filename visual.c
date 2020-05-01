@@ -39,7 +39,7 @@ void showWeights(char *str, int wchoice, int w1count, int MTAM, double *w1, doub
             for(int i=0; i<w1count; i++){
                 printf("\nw%i:\n", i);
                 for(int j=0;j<memsize;++j){
-                    printf("%f ", *(*(w2)+j));
+                    printf("%f ", w2[i][j]);
                     if(j!=0 && (j+1)%MTAM==0)
                         printf("\n");
                 }

@@ -43,7 +43,30 @@ int main()
     printf("Number of input weights(w1count): ");fflush(stdin);scanf("%i", &w1count);
     printf("\n%i input weights, select its type:\n1 - Doubles(w1).\n2 - Matrices(w2).\nType: ", w1count);fflush(stdin);scanf("%i", &wchoice);
     if(wchoice==2) {printf("\nEnter the size of the filter matrix, assuming square matrices(e.g. 2 = 2x2; 3 = 3x3)\nSize: "); scanf("%i", &wsize);printf("\nSelect the pooling method:\n1 - Max Pooling.\n2 - Average Pooling.\nChoice: "); scanf("%i", &poolchoice);}
-    if(wchoice!=1&&wchoice!=2){ return 0; } fillWeights(&w1, &w2, w1count, wchoice, &str, &MATTAM); showWeights(str, wchoice, w1count, MATTAM, w1, w2);
+    if(wchoice!=1&&wchoice!=2)return 0;
+
+    srand(time(NULL));
+    if(wchoice==2){ //Matrix
+        int tempsize;
+        str = "in the matrices ?";
+        printf("\nType in the size of the Matrices, assuming square matrices(e.g. 5 = 5x5; 7 = 7x7): ");fflush(stdin);scanf("%i", &MATTAM);
+        tempsize = (MATTAM)*(MATTAM);
+
+        w2 = (double**) malloc(sizeof(double*)*w1count);
+        for(int i=0;i<w1count;++i){
+            w2[i] = (double*)malloc(sizeof(double)*tempsize);
+            for(int j=0;j<tempsize;++j){
+                w2[i][j] = (double)((rand()%30)-10);
+            }
+        }
+    }
+    else{ //Doubles
+        str = "in the doubles ?";
+        w1 = (double*) malloc(sizeof(double)*w1count);
+        for(int i=0; i<w1count; ++i)
+            w1[i] = (double)((rand()%30)-10);
+    }
+    showWeights(str, wchoice, w1count, MATTAM, w1, w2);
 
     int memsize = wsize*wsize;
     int cvsize = convolvSize(MATTAM,wsize);
@@ -233,7 +256,6 @@ int main()
                 }
             }
         }
-
         //Compute operations for the output layer
     }
 

@@ -22,7 +22,6 @@ typedef struct layer{
     */
 }layer;
 
-void fillWeights(double **w1, double ***w2, int numbweights, int wchoice, char **str, int *MTAM);
 layer createOutputLayer(int neurons);
 layer assignOutputWeights(layer output, int previousLayerNeurons, int choice, int filtersize);
 int convolvSize(int MSize, int WSize);

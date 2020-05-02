@@ -10,5 +10,6 @@ double dSigmoid(double x);
 double addMatrices(double *a, double *b, int MSize);
 double getMajor(double *a, int MSize);
 double getAverage(double *a, int MSize);
+double randomNumberFilter();
 
 #endif // _MATHLIB_H_

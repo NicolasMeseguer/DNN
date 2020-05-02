@@ -75,3 +75,12 @@ void showOutput(layer outputLayer){
         printf("\nOutput neuron %i: %f", i, outputLayer.neurons[i].value);
     }
 }
+
+void PrintArray(double *arr, int WSize){
+    for(int i=0;i<(WSize*WSize);++i){
+        printf("%f ", *(arr+i));
+        if(i!=0 && (i+1)%WSize==0)
+        printf("\n");
+    }
+    printf("\n\n");
+}

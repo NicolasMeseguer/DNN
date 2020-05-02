@@ -12,7 +12,6 @@
 *
 *   Objectives:
 *       Random weights
-*       Checks if conv layer & pooling works as it should
 *
 */
 int main()
@@ -68,12 +67,13 @@ int main()
     }
     showWeights(str, wchoice, w1count, MATTAM, w1, w2);
 
-    int memsize = wsize*wsize;
-    int cvsize = convolvSize(MATTAM,wsize);
-    int cvmemsize = cvsize*cvsize;
-    int poolsize = convolvSize(cvsize, wsize);
-    int poolmemsize = poolsize*poolsize;
+    int memsize = wsize*wsize; //Filter matrix
 
+    int cvsize = convolvSize(MATTAM,wsize); //Convolution step
+    int cvmemsize = cvsize*cvsize;
+
+    int poolsize = convolvSize(cvsize, wsize); //Pooling step
+    int poolmemsize = poolsize*poolsize;
     /**/
     //Design the Network(Model)(Layers, Type(FC,Conv,...)
     switch(modelchoice){
@@ -150,8 +150,7 @@ int main()
                 for(int j=0;j<(layers+i)->tamneurons;++j){
                     (layers+i)->neurons[j].filter = (double *)malloc(sizeof(double)*memsize);
                     for(int k=0;k<memsize;++k){
-                        (layers+i)->neurons[j].filter[k] = (double)((rand()%3)-2); //Values between -1 & 1
-                        (layers+i)->neurons[j].mvalue = (double*)malloc(sizeof(double)*poolmemsize);
+                        (layers+i)->neurons[j].filter[k] = randomNumberFilter(); //Values between -1, 0 & 1
                     }
                 }
                 (layers+i)->layertype = 1;
@@ -200,26 +199,26 @@ int main()
                         double *tempmatrix = (double*)malloc(sizeof(double)*memsize);
                         double *convmatrix = (double*)malloc(sizeof(double)*cvmemsize);
                         int posx=0,posy=0,counter=0;
-                        double buffer = 0.0f;
+                        double buffer;
                         for(int l=0;l<cvmemsize;++l){
-
+                            buffer = 0.0f;
                             for(int k=0;k<w1count;++k){
                                 for(int n=0;n<wsize;++n){
                                     for(int o=0;o<wsize;++o){
                                         tempmatrix[(wsize*n)+o] = w2[k][((posy + n) * MATTAM) + posx + o];
                                     }
                                 }
-                                counter++;
-                                posx++;
-                                if(counter+wsize>MATTAM) {posy++;posx=0;counter=0;}
                                 buffer += addMatrices(tempmatrix, layers[i].neurons[j].filter, wsize);
                             }
-
+                            counter++;
+                            posx++;
+                            if(counter+wsize>MATTAM) {posy++;posx=0;counter=0;}
                             *(convmatrix+l) = buffer;
                         }
                         //Pooling Layer -> pooling filter size = Window size
                         counter=posx=posy=0;
                         double tempv;
+                        layers[i].neurons[j].mvalue = (double*)malloc(sizeof(double)*poolmemsize);
                         for(int l=0;l<poolmemsize;++l){
                             tempv = 0.0f;
                             for(int n=0;n<wsize;++n){
@@ -236,22 +235,14 @@ int main()
                             layers[i].neurons[j].mvalue[l] = tempv;
                         }
                         free(tempmatrix);
+                        free(convmatrix);
                     }
                     else{
-                        printf("\nLayer %i, neuron %i.", i, j);
+                        printf("\nLayer %i, neuron %i.\n", i, j);
                     }
 
-                    for(int k=0;k<memsize;++k){
-                        printf("%f ", layers[i].neurons[j].filter[k]);
-                        if(k!=0 && (k+1)%wsize==0)
-                        printf("\n");
-                    }
-
-                    for(int k=0;k<poolmemsize;++k){
-                        printf("%f ", layers[i].neurons[j].mvalue[k]);
-                        if(k!=0 && (k+1)%poolsize==0)
-                        printf("\n");
-                    }
+                    PrintArray(layers[i].neurons[j].filter, wsize);
+                    PrintArray(layers[i].neurons[j].mvalue, poolsize);
                     system("pause");
                 }
             }

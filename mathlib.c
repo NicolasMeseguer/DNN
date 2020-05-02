@@ -53,3 +53,14 @@ double getAverage(double *a, int MSize){
     }
     return (double)tempvalue/memsize;
 }
+
+//Return a number between [-1, 0, 1]
+double randomNumberFilter(){
+    double r;
+    double tempv = rand()%3;
+    if(tempv==0) r=0.0f;
+    else if(tempv==1) r=1.0f;
+    else r=-1.0f;
+
+    return r;
+}

@@ -9,5 +9,6 @@ int printmodelopt();
 void showWeights(char *str, int wchoice, int w1count, int MTAM, double *w1, double **w2);
 void showNeurons(int layercount, layer *layers);
 void showOutput(layer outputLayer);
+void PrintArray(double *arr, int WSize);
 
 #endif // _VISUAL_H_

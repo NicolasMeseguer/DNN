@@ -67,6 +67,8 @@ int main()
     }
     showWeights(str, wchoice, w1count, MATTAM, w1, w2);
 
+    int matrixTAM = MATTAM; //Size of the matrix
+
     int memsize = wsize*wsize; //Filter matrix
 
     int cvsize = convolvSize(MATTAM,wsize); //Convolution step
@@ -124,7 +126,7 @@ int main()
         case 2:
             if(wchoice!=2) {printf("\nThis design needs matrices as input weights.\n"); return 0;}
 
-            printf("\n1 - Automatically set the layers and neurons.\n2 - Set the layers and neurons in each.\nSelect one from above: ");scanf("%i", &decisionchoice);
+            printf("\n1 - Automatically set the layers and neurons, 3 layers with 3 neurons each.\n2 - Set the layers and neurons in each.\nNo matter what, the last layer will be a Flatten Layer.\nSelect one from above: ");scanf("%i", &decisionchoice);
             if(decisionchoice==1){  //Default design, 3 layers, 3 neurons each.
                 layercount = 3;
                 neuronsLayer = (int *)malloc(sizeof(int)*layercount);
@@ -153,7 +155,10 @@ int main()
                         (layers+i)->neurons[j].filter[k] = randomNumberFilter(); //Values between -1, 0 & 1
                     }
                 }
-                (layers+i)->layertype = 1;
+                if(i==layercount-1)
+                    (layers+i)->layertype = 1; //Last layer will be a flatten layer
+                else
+                    (layers+i)->layertype = 2; //All the other layers will be convolution
             }
 
             output = assignOutputWeights(output, layers[layercount-1].tamneurons, wchoice, wsize);
@@ -193,10 +198,11 @@ int main()
     }
     else if(modelchoice==2){
         for(int i=0;i<layercount;++i){
-            if((layers+i)->layertype == 1){
-                for(int j=0;j<(layers+i)->tamneurons;++j){
+            for(int j=0;j<(layers+i)->tamneurons;++j){
+                printf("\nLayer %i, neuron %i.\n", i, j);
+                if((layers+i)->layertype == 2){
+                    double *tempmatrix = (double*)malloc(sizeof(double)*memsize);
                     if(i==0){
-                        double *tempmatrix = (double*)malloc(sizeof(double)*memsize);
                         double *convmatrix = (double*)malloc(sizeof(double)*cvmemsize);
                         int posx=0,posy=0,counter=0;
                         double buffer;
@@ -215,7 +221,7 @@ int main()
                             if(counter+wsize>MATTAM) {posy++;posx=0;counter=0;}
                             *(convmatrix+l) = buffer;
                         }
-                        //Pooling Layer -> pooling filter size = Window size
+                        //Pooling Layer
                         counter=posx=posy=0;
                         double tempv;
                         layers[i].neurons[j].mvalue = (double*)malloc(sizeof(double)*poolmemsize);
@@ -234,18 +240,63 @@ int main()
                             else if(poolchoice==2) tempv = getMajor(tempmatrix, wsize);
                             layers[i].neurons[j].mvalue[l] = tempv;
                         }
-                        free(tempmatrix);
                         free(convmatrix);
                     }
                     else{
-                        printf("\nLayer %i, neuron %i.\n", i, j);
+                        double *convmatrix = (double*)malloc(sizeof(double)*cvmemsize);
+                        int posx=0,posy=0,counter=0;
+                        double buffer;
+                        for(int l=0;l<cvmemsize;++l){
+                            buffer = 0.0f;
+                            for(int k=0;k<(layers[i-1].tamneurons);++k){
+                                for(int n=0;n<wsize;++n){
+                                    for(int o=0;o<wsize;++o){
+                                        tempmatrix[(wsize*n)+o] = layers[i-1].neurons[k].mvalue[((posy + n) * matrixTAM) + posx + o];
+                                    }
+                                }
+                                buffer += addMatrices(tempmatrix, layers[i].neurons[j].filter, wsize);
+                            }
+                            counter++;
+                            posx++;
+                            if(counter+wsize>MATTAM) {posy++;posx=0;counter=0;}
+                            *(convmatrix+l) = buffer;
+                        }
+                        //Pooling Layer
+                        counter=posx=posy=0;
+                        double tempv;
+                        layers[i].neurons[j].mvalue = (double*)malloc(sizeof(double)*poolmemsize);
+                        for(int l=0;l<poolmemsize;++l){
+                            tempv = 0.0f;
+                            for(int n=0;n<wsize;++n){
+                                for(int o=0;o<wsize;++o){
+                                    tempmatrix[(wsize*n)+o] = convmatrix[((posy + n) * cvsize) + posx + o];
+                                }
+                            }
+                            counter++;
+                            posx++;
+                            if(counter+wsize>cvsize) {posy++;posx=0;counter=0;}
+
+                            if(poolchoice==1) tempv = getAverage(tempmatrix, wsize);
+                            else if(poolchoice==2) tempv = getMajor(tempmatrix, wsize);
+                            layers[i].neurons[j].mvalue[l] = tempv;
+                        }
+                        free(convmatrix);
                     }
 
                     PrintArray(layers[i].neurons[j].filter, wsize);
                     PrintArray(layers[i].neurons[j].mvalue, poolsize);
                     system("pause");
+                    free(tempmatrix);
+                }
+                else if((layers+i)->layertype == 1){
+                    printf("Flatten Layer\n");
                 }
             }
+            cvsize = convolvSize(poolsize,wsize);
+            cvmemsize = cvsize*cvsize;
+            matrixTAM = poolsize;
+            poolsize = convolvSize(cvsize, wsize);
+            poolmemsize = poolsize*poolsize;
         }
         //Compute operations for the output layer
     }

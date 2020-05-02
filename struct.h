@@ -18,6 +18,7 @@ typedef struct layer{
     /*
     * 0 = Output Layer
     * 1 = Fully Connected
+    * 2 = Convolution Layer
     *
     */
 }layer;

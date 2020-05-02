@@ -121,7 +121,7 @@ int main()
                 }
                 (layers+i)->layertype = 1;
             }
-            output = assignOutputWeights(output, layers[layercount-1].tamneurons, wchoice, 0);
+            output = assignOutputWeights(output, layers[layercount-1].tamneurons);
             break;
         case 2:
             if(wchoice!=2) {printf("\nThis design needs matrices as input weights.\n"); return 0;}
@@ -155,13 +155,22 @@ int main()
                         (layers+i)->neurons[j].filter[k] = randomNumberFilter(); //Values between -1, 0 & 1
                     }
                 }
-                if(i==layercount-1)
-                    (layers+i)->layertype = 1; //Last layer will be a flatten layer
-                else
-                    (layers+i)->layertype = 2; //All the other layers will be convolution
+                if(decisionchoice==2){
+                    int k;
+                    printf("\nLayer %i, select type:\n1. Convolution.\n2. Flatten Layer.\nSelect: ", i);scanf("%i", &k);
+                    if(k==1)
+                        (layers+i)->layertype = 2;
+                    else if(k==2)
+                        (layers+i)->layertype = 1;
+                }
+                else{
+                    if(i==layercount-1)
+                        (layers+i)->layertype = 1; //Last layer will be a flatten layer
+                    else
+                        (layers+i)->layertype = 2; //All the other layers will be convolution
+                }
             }
-
-            output = assignOutputWeights(output, layers[layercount-1].tamneurons, wchoice, wsize);
+            output = assignOutputWeights(output, layers[layercount-1].tamneurons);
             break;
         default:
             printf("\nTemplate not defined yet...\n\n\n");
@@ -197,7 +206,27 @@ int main()
         }
     }
     else if(modelchoice==2){
+        int firstflattenlayer = 1;
+        int firstflattenlayersecond = 1;
         for(int i=0;i<layercount;++i){
+            if(layers[i].layertype == 1 && firstflattenlayer == 1){
+                int weights = layers[i-1].tamneurons*matrixTAM*matrixTAM;
+                for(int j=0;j<(layers+i)->tamneurons;++j){
+                    (layers+i)->neurons[j].weight = (double *)malloc(sizeof(double)*weights);
+                    for(int k=0;k<weights;++k){
+                        (layers+i)->neurons[j].weight[k] = (double)(rand()%2);
+                    }
+                }
+            }
+            else if((layers+i)->layertype == 1 && firstflattenlayer != 1){
+                int weights = layers[i-1].tamneurons;
+                for(int j=0;j<(layers+i)->tamneurons;++j){
+                    (layers+i)->neurons[j].weight = (double *)malloc(sizeof(double)*weights);
+                    for(int k=0;k<weights;++k){
+                        (layers+i)->neurons[j].weight[k] = (double)(rand()%2);
+                    }
+                }
+            }
             for(int j=0;j<(layers+i)->tamneurons;++j){
                 printf("\nLayer %i, neuron %i.\n", i, j);
                 if((layers+i)->layertype == 2){
@@ -289,16 +318,42 @@ int main()
                     free(tempmatrix);
                 }
                 else if((layers+i)->layertype == 1){
+                    double buffer = 0.0f;
+
+                    if(firstflattenlayersecond==1){ //First flatten layer.
+                        firstflattenlayer = 0;
+                        int localmem = matrixTAM*matrixTAM;
+                        int weights = layers[i-1].tamneurons*localmem;
+                        double *valuearray = (double*)malloc(sizeof(double)*weights);
+                        for(int k=0;k<layers[i-1].tamneurons;++k)
+                            for(int l=0;l<localmem;++l)
+                                valuearray[(k*localmem)+l] = layers[i-1].neurons[k].mvalue[l];
+
+                        for(int k=0;k<weights;++k)
+                            buffer+=(*(valuearray+k))*(layers[i].neurons[j].weight[k]);
+                    }
+                    else{
+                        for(int k=0;k<layers[i-1].tamneurons;++k)
+                            buffer+=(layers[i-1].neurons[k].value)*(layers[i].neurons[j].weight[k]);
+                    }
+                    layers[i].neurons[j].value = ReLU(buffer);
                     printf("Flatten Layer\n");
                 }
             }
+            if(firstflattenlayer==0)
+                firstflattenlayersecond = 0;
             cvsize = convolvSize(poolsize,wsize);
             cvmemsize = cvsize*cvsize;
             matrixTAM = poolsize;
             poolsize = convolvSize(cvsize, wsize);
             poolmemsize = poolsize*poolsize;
         }
-        //Compute operations for the output layer
+        for(int i=0;i<output.tamneurons;++i){
+            double sum=0;
+            for(int j=0;j<layers[layercount-1].tamneurons;++j)
+                sum += (layers[layercount-1].neurons[j].value)*(output.neurons[i].weight[j]);
+            output.neurons[i].value=sigmoid(sum);
+        }
     }
 
     /**/

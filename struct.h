@@ -24,7 +24,7 @@ typedef struct layer{
 }layer;
 
 layer createOutputLayer(int neurons);
-layer assignOutputWeights(layer output, int previousLayerNeurons, int choice, int filtersize);
+layer assignOutputWeights(layer output, int previousLayerNeurons);
 int convolvSize(int MSize, int WSize);
 
 #endif // _STRUCT_H_

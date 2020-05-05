@@ -55,7 +55,7 @@ int main()
         for(int i=0;i<w1count;++i){
             w2[i] = (double*)malloc(sizeof(double)*tempsize);
             for(int j=0;j<tempsize;++j){
-                w2[i][j] = (double)((rand()%30)-10);
+                w2[i][j] = (double)((rand()%10));
             }
         }
     }
@@ -63,7 +63,7 @@ int main()
         str = "in the doubles ?";
         w1 = (double*) malloc(sizeof(double)*w1count);
         for(int i=0; i<w1count; ++i)
-            w1[i] = (double)((rand()%30)-10);
+            w1[i] = (double)((rand()%30));
     }
     showWeights(str, wchoice, w1count, MATTAM, w1, w2);
 
@@ -214,7 +214,7 @@ int main()
                 for(int j=0;j<(layers+i)->tamneurons;++j){
                     (layers+i)->neurons[j].weight = (double *)malloc(sizeof(double)*weights);
                     for(int k=0;k<weights;++k){
-                        (layers+i)->neurons[j].weight[k] = (double)(rand()%2);
+                        (layers+i)->neurons[j].weight[k] = randomNumberOutput();
                     }
                 }
             }
@@ -223,12 +223,11 @@ int main()
                 for(int j=0;j<(layers+i)->tamneurons;++j){
                     (layers+i)->neurons[j].weight = (double *)malloc(sizeof(double)*weights);
                     for(int k=0;k<weights;++k){
-                        (layers+i)->neurons[j].weight[k] = (double)(rand()%2);
+                        (layers+i)->neurons[j].weight[k] = randomNumberOutput();
                     }
                 }
             }
             for(int j=0;j<(layers+i)->tamneurons;++j){
-                printf("\nLayer %i, neuron %i.\n", i, j);
                 if((layers+i)->layertype == 2){
                     double *tempmatrix = (double*)malloc(sizeof(double)*memsize);
                     if(i==0){
@@ -250,7 +249,6 @@ int main()
                             if(counter+wsize>MATTAM) {posy++;posx=0;counter=0;}
                             *(convmatrix+l) = buffer;
                         }
-                        //Pooling Layer
                         counter=posx=posy=0;
                         double tempv;
                         layers[i].neurons[j].mvalue = (double*)malloc(sizeof(double)*poolmemsize);
@@ -290,7 +288,6 @@ int main()
                             if(counter+wsize>MATTAM) {posy++;posx=0;counter=0;}
                             *(convmatrix+l) = buffer;
                         }
-                        //Pooling Layer
                         counter=posx=posy=0;
                         double tempv;
                         layers[i].neurons[j].mvalue = (double*)malloc(sizeof(double)*poolmemsize);
@@ -337,7 +334,6 @@ int main()
                             buffer+=(layers[i-1].neurons[k].value)*(layers[i].neurons[j].weight[k]);
                     }
                     layers[i].neurons[j].value = ReLU(buffer);
-                    printf("Flatten Layer\n");
                 }
             }
             if(firstflattenlayer==0)
@@ -352,7 +348,7 @@ int main()
             double sum=0;
             for(int j=0;j<layers[layercount-1].tamneurons;++j)
                 sum += (layers[layercount-1].neurons[j].value)*(output.neurons[i].weight[j]);
-            output.neurons[i].value=sigmoid(sum);
+            output.neurons[i].value=ReLU(sum);
         }
     }
 

@@ -11,5 +11,6 @@ double addMatrices(double *a, double *b, int MSize);
 double getMajor(double *a, int MSize);
 double getAverage(double *a, int MSize);
 double randomNumberFilter();
+double randomNumberOutput();
 
 #endif // _MATHLIB_H_

@@ -57,10 +57,18 @@ double getAverage(double *a, int MSize){
 //Return a number between [-1, 0, 1]
 double randomNumberFilter(){
     double r;
-    double tempv = rand()%3;
+    double tempv = rand()%2;
     if(tempv==0) r=0.0f;
     else if(tempv==1) r=1.0f;
-    else r=-1.0f;
+
+    return r;
+}
+
+double randomNumberOutput(){
+    double r;
+    double tempv = rand()%2;
+    if(tempv==0) r=0.0f;
+    else if(tempv==1) r=1.0f;
 
     return r;
 }

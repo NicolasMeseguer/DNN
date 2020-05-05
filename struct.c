@@ -8,10 +8,11 @@ layer createOutputLayer(int neurons){
 }
 
 layer assignOutputWeights(layer output, int previousLayerNeurons){
+    srand(time(NULL));
     for(int i=0;i<output.tamneurons;++i){
         output.neurons[i].weight = (double *)malloc(sizeof(double)*previousLayerNeurons);
         for(int j=0;j<previousLayerNeurons;++j){
-            output.neurons[i].weight[j] = (double)(rand()%2);
+            output.neurons[i].weight[j] = randomNumberOutput();
         }
     }
     return output;

@@ -2,6 +2,7 @@
 #define _STRUCT_H_
 
 #include "header.h"
+#include "mathlib.h"
 
 typedef struct neuron{
     double value;

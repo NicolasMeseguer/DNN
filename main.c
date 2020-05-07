@@ -63,7 +63,7 @@ int main()
         str = "in the doubles ?";
         w1 = (double*) malloc(sizeof(double)*w1count);
         for(int i=0; i<w1count; ++i)
-            w1[i] = (double)((rand()%30));
+            w1[i] = (double)((rand()%3));
     }
     showWeights(str, wchoice, w1count, MATTAM, w1, w2);
 

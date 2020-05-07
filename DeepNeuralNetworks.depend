@@ -36,36 +36,36 @@
 1583163737 source:c:\users\nicolasmeseguer\desktop\proyectodnn\dnn\visual.c
 	"visual.h"
 
-1588682789 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\main.c
+1588718787 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\main.c
 	"header.h"
 	"struct.h"
 	"visual.h"
 	"mathlib.h"
 
-1588285715 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\header.h
+1588691995 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\header.h
 	<stdio.h>
 	<math.h>
 	<stdlib.h>
 	<time.h>
 	<float.h>
 
-1588681162 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\struct.h
+1588691995 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\struct.h
 	"header.h"
 	"mathlib.h"
 
-1588418848 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\visual.h
+1588691995 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\visual.h
 	"struct.h"
 	"header.h"
 
-1588681147 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\mathlib.h
+1588691995 c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\mathlib.h
 	"header.h"
 
-1588682142 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\mathlib.c
+1588691995 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\mathlib.c
 	"mathlib.h"
 
-1588681173 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\struct.c
+1588691995 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\struct.c
 	"struct.h"
 
-1588418976 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\visual.c
+1588691995 source:c:\users\nicolasmeseguer\desktop\departamento proyecto\dnn\visual.c
 	"visual.h"
 
